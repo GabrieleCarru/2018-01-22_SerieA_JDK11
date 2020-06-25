@@ -6,6 +6,7 @@ public class Match {
 
 	private int id;
 	private Season season;
+	private Integer year;
 	private String div;
 	private LocalDate date;
 	private Team homeTeam;
@@ -38,6 +39,18 @@ public class Match {
 		this.awayTeam = awayTeam;
 		this.fthg = fthg;
 		this.ftag = ftag;
+		this.ftr = ftr;
+	}
+	
+	public Match(Integer season, Team homeTeam, Team awayTeam, String ftr) {
+		this.id = -1;
+		this.year = season;
+		this.div = null;
+		this.date = null;
+		this.homeTeam = homeTeam;
+		this.awayTeam = awayTeam;
+		this.fthg = -1;
+		this.ftag = -1;
 		this.ftr = ftr;
 	}
 

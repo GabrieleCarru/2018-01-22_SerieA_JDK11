@@ -1,9 +1,12 @@
 package it.polito.tdp.seriea;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.seriea.model.AnnoPunti;
 import it.polito.tdp.seriea.model.Model;
+import it.polito.tdp.seriea.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,7 +24,7 @@ public class FXMLController {
     private URL location;
 
     @FXML
-    private ChoiceBox<?> boxSquadra;
+    private ChoiceBox<Team> boxSquadra;
 
     @FXML
     private Button btnSelezionaSquadra;
@@ -38,6 +41,24 @@ public class FXMLController {
     @FXML
     void doSelezionaSquadra(ActionEvent event) {
 
+    	txtResult.clear();
+    	
+    	Team team = boxSquadra.getValue();
+    	
+    	if(team == null) {
+    		txtResult.appendText("Errore: selezionare una squadra.\n");
+    		return;
+    	}
+    	
+    	List<AnnoPunti> annipunti = this.model.getPuntiForYear(team);
+    	
+    	txtResult.appendText(String.format("Ecco i punti di ogni campionato per la squadra %s: \n", 
+    											team.getTeam()));
+    	
+    	for(AnnoPunti ap : annipunti) {
+    		txtResult.appendText(ap.toString() + "\n");
+    	}
+    	
     }
 
     @FXML
@@ -62,5 +83,6 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		boxSquadra.getItems().addAll(this.model.getAllTeams());
 	}
 }
