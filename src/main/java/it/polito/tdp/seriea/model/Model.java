@@ -123,15 +123,15 @@ public class Model {
 			for(Season s2 : seasons) {
 				if(!s1.equals(s2)) {
 					
-					if(idMapSeason.get(s1) < idMapSeason.get(s2)) {
-						Graphs.addEdge(this.graph, 
-								s1, s2, 
-								(idMapSeason.get(s1) - idMapSeason.get(s2)));
-					} 
-					
 					if(idMapSeason.get(s1) > idMapSeason.get(s2)) {
 						Graphs.addEdge(this.graph, 
 								s2, s1, 
+								(idMapSeason.get(s1) - idMapSeason.get(s2)));
+					} 
+					
+					if(idMapSeason.get(s1) < idMapSeason.get(s2)) {
+						Graphs.addEdge(this.graph, 
+								s1, s2, 
 								(idMapSeason.get(s2) - idMapSeason.get(s1)));
 					}
 				}
