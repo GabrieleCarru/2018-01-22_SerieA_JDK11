@@ -64,6 +64,27 @@ public class FXMLController {
     @FXML
     void doTrovaAnnataOro(ActionEvent event) {
 
+    	txtResult.appendText("\n");
+    	
+    	Team team = boxSquadra.getValue();
+    	
+    	if(team == null) {
+    		txtResult.appendText("Errore: selezionare una squadra.\n");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo();
+    	
+    	txtResult.appendText(String.format("Grafo creato! [#Vertici %d, #Archi %d] \n", 
+    									this.model.getNumberVertex(), this.model.getNumberEdge()));
+    	
+    	txtResult.appendText("\n");
+    	
+    	this.model.findBestAnnata();
+    	
+    	txtResult.appendText(String.format("Migliore annata trovata: %s \n"
+    			+ "Differenza dei pesi = %d\n", 
+				this.model.getBestAnnata().getDescription(), this.model.getBestDifferenzaPunteggio()));
     }
 
     @FXML

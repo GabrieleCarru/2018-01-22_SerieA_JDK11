@@ -138,18 +138,28 @@ public class SerieADAO {
 
 	public List<Match> getPartiteByAnno(Integer anno, Team team) {
 		
-		String sql = ""; 
+		String sql = "select `Season` as anno, `HomeTeam` as h, " + 
+				"`AwayTeam` as a, `FTR` as winner " + 
+				"from matches " + 
+				"where `Season` = ? " + 
+				"and (`HomeTeam` = ? or `AwayTeam` = ? "; 
 		
-		List<?> result = new ArrayList<>();
+		List<Match> result = new ArrayList<>();
 		
 		try {
 			Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			
+			st.setInt(1, anno);
+			st.setString(2, team.getTeam());
+			st.setString(3, team.getTeam());
 			ResultSet rs = st.executeQuery();
 			
-			while(rs.next()) {
-				
+			while(rs.next()) {		
+				Match m = new Match(anno, 
+						new Team(rs.getString("h")), 
+						new Team(rs.getString("a")), 
+						rs.getString("winner"));
+				result.add(m);
 			}
 			
 			conn.close();
@@ -162,5 +172,43 @@ public class SerieADAO {
 		
 	}
 
+	public List<Match> getPartiteByTeam2(Team team) {
+		
+		String sql = "select `match_id`, `Season`, `Div`, `Date`, `HomeTeam`, " + 
+				"`AwayTeam`, `FTHG`, `FTAG`, `FTR` as winner " + 
+				"from matches " + 
+				"where `HomeTeam` = ? or `AwayTeam` = ? ";
+		
+		List<Match> result = new ArrayList<>();
+		
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, team.getTeam());
+			st.setString(2, team.getTeam());
+			ResultSet rs = st.executeQuery();
+			
+			while(rs.next()) {
+				result.add(new Match(rs.getInt("match_id"), 
+								new Season(rs.getInt("Season"), (rs.getInt("Season") -1) + "/" + rs.getInt("Season")), 
+								rs.getString("Div"), 
+								rs.getDate("Date").toLocalDate(), 
+								new Team(rs.getString("HomeTeam")), 
+								new Team(rs.getString("AwayTeam")), 
+								rs.getInt("FTHG"), 
+								rs.getInt("FTAG"), 
+								rs.getString("FTR")));
+			}
+			
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
 }
 

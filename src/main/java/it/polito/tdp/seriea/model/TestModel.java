@@ -17,7 +17,7 @@ public class TestModel {
 		Team team = new Team("Milan");
 		Map<Integer, List<Match>> risultati = dao.getPartiteAndSeason(team);
 		System.out.println(risultati.keySet().size());
-		List<Match> elenco2003 = new ArrayList<>(risultati.get(2003));
+		List<Match> elenco2003 = new ArrayList<>(dao.getPartiteByAnno(2003, team));
 		System.out.println("\n" + elenco2003.size() + "\n");
 		for(Match p : elenco2003) {
 			System.out.println(p.toString() + "\n");
