@@ -22,6 +22,8 @@ public class Model {
 	private Map<Season, Integer> idMapSeason;
 	private Integer bestDifferenzaPunteggio;
 	private Season bestAnnata;
+	private Integer camminoMassimo;
+	private Season inizio;
 	
 	public Model() {
 		dao = new SerieADAO();
@@ -161,6 +163,71 @@ public class Model {
 		}
 	}
 	
+	public AnnateVirtuose camminoVirtuoso() {
+		
+		camminoMassimo = 0;
+		inizio = null;
+		
+		List<AnnateVirtuose> possibiliAnnate = new ArrayList<>();
+		
+		List<Season> seasons = new ArrayList<>(this.graph.vertexSet());
+		Collections.sort(seasons);
+		int camminoMaxParziale = 0;
+		
+		for(int i = 0; i < seasons.size()-1; i++) {
+			// Se il successivo è maggiore aggiungo nell'ipotetico cammino
+			if(idMapSeason.get(seasons.get(i+1)) > idMapSeason.get(seasons.get(i))) {
+				if(inizio == null) {
+					camminoMaxParziale++;
+					camminoMassimo = camminoMaxParziale;
+					inizio = seasons.get(i);
+				} else {
+					camminoMaxParziale++;
+					camminoMassimo = camminoMaxParziale;
+				}
+			// Se il successivo non è più grande si interrompe il cammino
+			} else {
+				possibiliAnnate.add(new AnnateVirtuose(inizio, camminoMassimo));
+				camminoMaxParziale = 0;
+				camminoMassimo = 0;
+				inizio = null;
+			}
+		}
+		
+		camminoMassimo = 0;
+		inizio = null;
+		AnnateVirtuose best = null;
+		
+		for(AnnateVirtuose av : possibiliAnnate) {
+			if(av.getConsecutivi() > camminoMassimo) {
+				camminoMassimo = av.getConsecutivi();
+				inizio = av.getSeason();
+				best = av;
+			}
+		}
+		
+		return best;
+		
+	}
+	
+	public List<AnnateVirtuose> getStagioniVirtuose() {
+		
+		List<AnnateVirtuose> result = new ArrayList<>();
+		List<Season> seasons = new ArrayList<>(this.graph.vertexSet());
+		Collections.sort(seasons);
+		
+		for(int i = 0; i < seasons.size(); i++) {
+			if(seasons.get(i).equals(inizio)) {
+				for(int j = 1; j < camminoMassimo + 1; j++) {
+					result.add(new AnnateVirtuose(seasons.get(i+j), idMapSeason.get(seasons.get(i+j))));
+				}
+			}
+		}
+		
+		return result;
+		
+	}
+	
 	private int calcolaPuntiArchi(List<DefaultWeightedEdge> listaArchi) {
 		
 		int punteggio = 0;
@@ -216,5 +283,7 @@ public class Model {
 	public List<Team> getAllTeams() {
 		return dao.listTeams();
 	}
+
+	
 	
 }

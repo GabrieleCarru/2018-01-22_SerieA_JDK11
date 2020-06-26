@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.seriea.model.AnnateVirtuose;
 import it.polito.tdp.seriea.model.AnnoPunti;
 import it.polito.tdp.seriea.model.Model;
 import it.polito.tdp.seriea.model.Team;
@@ -90,6 +91,20 @@ public class FXMLController {
     @FXML
     void doTrovaCamminoVirtuoso(ActionEvent event) {
 
+    	txtResult.appendText("\n");
+    	
+    	AnnateVirtuose best = this.model.camminoVirtuoso();
+    	List<AnnateVirtuose> elencoStagioni = this.model.getStagioniVirtuose();
+    		
+    	txtResult.appendText(String.format("Il cammino virtuoso comincia nella stagione \n"
+    			+ "%s e la squadra per %d anni ha migliorato il suo piazzamento in classifica:\n", 
+    						best.getSeason().getDescription(), best.getConsecutivi()));
+    	
+    	for(AnnateVirtuose av : elencoStagioni) {
+    		txtResult.appendText(String.format(" - %s  | %d\n", 
+    				av.getSeason().getDescription(), av.getConsecutivi()));
+    	}
+    	
     }
 
     @FXML
